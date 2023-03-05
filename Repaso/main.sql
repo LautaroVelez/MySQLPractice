@@ -1,0 +1,6 @@
+DROP DATABASE IF EXISTS FitnessGroup;
+CREATE DATABASE IF NOT EXISTS FitnessGroup;
+USE FitnessGroup;
+
+
+
