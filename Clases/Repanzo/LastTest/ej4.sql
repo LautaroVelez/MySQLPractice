@@ -9,10 +9,11 @@
 --8-Get all the films that are available in store id 2 and the manager first/last name of this store (the manager will appear in all the rows).
 
 use sakila;
-
+show databases;
+show tables;
 --1--
-SELECT title, special_features from film where rating = "PG-13";
+select f.title, f.special_features from film f where f.rating = "PG-13";
 
 --2--
+select distinct f.length from film f order by f.LENGTH;
 
-select DISTINCT title, length from film;
