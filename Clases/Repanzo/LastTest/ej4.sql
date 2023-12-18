@@ -46,3 +46,11 @@ join country co on ci.city_id = co.country_id
 where s.store_id = 1;
 
 --7-Show pair of film titles and rating of films that have the same rating.
+select f1.title, f1.rating, f2.title, f2.rating from film f1, film f2 where f1.rating = f2.rating and f1.film_id =! f2.film_id;
+
+--8-Get all the films that are available in store id 2 and the manager first/last name of this store (the manager will appear in all the rows).
+select f.title, s.store_id, st.first_name, st.last_name from staff st
+join store s on st.staff_id = s.manager_staff_id
+join  inventory i on s.store_id = i.store_id
+join film f on i.film_id = f.film_id
+where s.store_id = 2;
