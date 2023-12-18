@@ -31,11 +31,18 @@ Join film f on fa.film_id = f.film_id
 Where f.title = 'ZOOLANDER FICTION';
 
 --6---Show the address, city and country of the store with id 1
+--esta no
 select co.country, ci.city, a.address from store s
 join country co on co.country_id = ci.city_id
 join address a on a.address_id = ci.city_id
 JOIN city ci on ci.city_id = s.store_id
 where s.store_id = 1;
 
---hay que mirar el diagrama del mas grande al mas chico, por ejemplo, de store a address, de adrress a el otro que sigue y asi
---poder segguir la query, me voy a dormir 18:05 sabado 16 de dic.
+--esta capaz¿
+select a.address, ci.city, co.country from store s
+join address a on s.store_id = a.address_id 
+join city ci on a.address_id = ci.city_id
+join country co on ci.city_id = co.country_id
+where s.store_id = 1;
+
+--7-Show pair of film titles and rating of films that have the same rating.
