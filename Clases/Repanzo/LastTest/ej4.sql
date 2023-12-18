@@ -1,3 +1,4 @@
+-- Active: 1687904736759@@127.0.0.1@3306@sakila
 
 --1-Show title and special_features of films that are PG-13
 --2-Get a list of all the different films duration.
@@ -9,11 +10,32 @@
 --8-Get all the films that are available in store id 2 and the manager first/last name of this store (the manager will appear in all the rows).
 
 use sakila;
-show databases;
-show tables;
+
 --1--
 select f.title, f.special_features from film f where f.rating = "PG-13";
 
 --2--
 select distinct f.length from film f order by f.LENGTH;
 
+--3--
+select f.title, f.rental_rate, f.replacement_cost from film f where f.replacement_cost > 20.00 and f.replacement_cost < 24.00;  
+
+--4--
+select f.title, c.name, f.rating from film f, category c, film_category fc where fc.film_id = fc.category_id and c.category_id = fc.category_id and f.special_features = "Behind the Scenes";
+--5--
+select a.first_name, a.last_name from actor a, film_actor fa, film f where fa.actor_id = a.actor_id and fa.film_id = f.film_id and f.title= 'ZOOLANDER FICTION';
+
+select a.first_name, a.last_name From actor a 
+Join film_actor fa on a.actor_id = fa.actor_id 
+Join film f on fa.film_id = f.film_id
+Where f.title = 'ZOOLANDER FICTION';
+
+--6---Show the address, city and country of the store with id 1
+select co.country, ci.city, a.address from store s
+join country co on co.country_id = ci.city_id
+join address a on a.address_id = ci.city_id
+JOIN city ci on ci.city_id = s.store_id
+where s.store_id = 1;
+
+--hay que mirar el diagrama del mas grande al mas chico, por ejemplo, de store a address, de adrress a el otro que sigue y asi
+--poder segguir la query, me voy a dormir 18:05 sabado 16 de dic.
