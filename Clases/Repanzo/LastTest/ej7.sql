@@ -22,4 +22,11 @@ select title,length from film f1
 where length <= (select MIN(length) from film) and not EXISTS
 (select f2.length from film f2 where f2.length <= f1.length and f1.film_id <> f2.film_id);
 
---trate de entender el 1 y el 2 pero no pude, me voy a dormir, 03:14am 19 de dic.
+--3--Generate a report with list of customers showing the lowest payments done by each of them. 
+--Show customer information, the address and the lowest amount, provide both solution using ALL and/or ANY and MIN.
+
+select CONCAT(c.first_name, ' ',c.last_name) as name, address, MIN(p1.amount) as lowest_payment  from customer c 
+join payment p1 on p1.customer_id = c.customer_id
+join address a on a.address_id = c.address_id
+group by first_name, last_name, address;
+
