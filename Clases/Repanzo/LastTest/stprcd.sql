@@ -140,7 +140,9 @@ obtener_correo: LOOP
 	SET lista_correos = CONCAT(v_correo,";",lista_correos);
 END LOOP obtener_correo;
 
-
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 --store procedure creado con cursor
 
 DELIMITER $$
@@ -177,8 +179,54 @@ BEGIN
 END$$
 DELIMITER ;
 
-
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 --para probarlo es 
 SET @lista_correos = "";
 CALL construir_lista_correos(@lista_correos);
 SELECT @lista_correos;
+
+--carrannnn
+DELIMITER $$
+CREATE PROCEDURE actualizar_costos(
+    IN min_pedido INT,
+    IN max_pedido INT,
+    IN porcentaje_aumento int
+)
+BEGIN
+    DECLARE id_producto INT;
+    DECLARE id_pedido INT;
+    DECLARE precio_unitario DECIMAL(10,4);
+    DECLARE precio_nuevo DECIMAL(10,4);
+    declare done int default 0;
+    
+    DECLARE cur CURSOR FOR 
+        SELECT od.ProductID, od.OrderID, p.UnitPrice
+        FROM OrderDetails AS od
+        JOIN Products AS p ON od.ProductID = p.ProductID
+        WHERE od.OrderID >= min_pedido AND od.OrderID <= max_pedido;
+
+        declare continue handler for not found set done = 1;
+
+        open cur;
+        
+        #no se como hacer el loop del cursor
+        while done = 0 do
+            fetch cur into id_producto, id_pedido, precio_unitario;
+            SET precio_nuevo = precio_unitario * (1 + (porcentaje_aumento / 100)); #aumento del precio
+            
+            UPDATE Products SET UnitPrice = precio_nuevo WHERE ProductID = id_producto; # updateamos con el precio nuevo
+            
+            SELECT p.ProductName, porcentaje_aumento, COUNT(od.OrderID) AS cantidad_pedidos, precio_unitario, precio_nuevo
+            FROM Products AS p 
+            JOIN OrderDetails AS od ON p.ProductID = od.ProductID
+            WHERE od.OrderID = id_pedido
+            GROUP BY p.ProductName; #esta seria la query para mostrar 
+        end while;
+        close cur;
+    
+END$$
+DELIMITER ;
+
+CALL actualizar_costos(10248, 10253, 10); #llamar la procedure pasandole los 3 IN que le pedimos
