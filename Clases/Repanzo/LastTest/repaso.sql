@@ -113,3 +113,72 @@ CALL GetCustomerShipping(@customerNo, @shipping);
 SELECT @customerNo AS Cliente,
        @country AS País,
        @shipping AS Envío;
+
+
+--CURSOR
+
+DECLARE finalizado INTEGER DEFAULT 0;
+DECLARE correo varchar(255) DEFAULT "";
+
+-- declarar cursor para el correo electrónico de los empleados
+DECLARE cursor_correo CURSOR FOR 
+	SELECT correo FROM empleados;
+
+-- declarar controlador NOT FOUND
+DECLARE CONTINUE HANDLER 
+FOR NOT FOUND SET finalizado = 1;
+
+--lo abrimos
+OPEN cursor_correo;
+
+obtener_correo: LOOP
+	FETCH cursor_correo INTO v_correo;
+	IF v_finalizado = 1 THEN 
+		LEAVE obtener_correo;
+	END IF;
+	-- construir lista de correos electrónicos
+	SET lista_correos = CONCAT(v_correo,";",lista_correos);
+END LOOP obtener_correo;
+
+
+--store procedure creado con cursor
+
+DELIMITER $$
+CREATE PROCEDURE construir_lista_correos (INOUT lista_correos varchar(4000))
+BEGIN
+	DECLARE v_finalizado INTEGER DEFAULT 0;
+    DECLARE v_correo varchar(100) DEFAULT "";
+
+	-- declarar cursor para el correo electrónico de los empleados
+	DEClARE cursor_correo CURSOR FOR 
+		SELECT correo FROM empleados;
+
+	-- declarar controlador NOT FOUND
+	DECLARE CONTINUE HANDLER 
+        FOR NOT FOUND SET v_finalizado = 1;
+
+	OPEN cursor_correo;
+
+	obtener_correo: LOOP
+
+		FETCH cursor_correo INTO v_correo;
+
+		IF v_finalizado = 1 THEN 
+			LEAVE obtener_correo;
+		END IF;
+
+		-- construir lista de correos electrónicos
+		SET lista_correos = CONCAT(v_correo,";",lista_correos);
+
+	END LOOP obtener_correo;
+
+	CLOSE cursor_correo;
+
+END$$
+DELIMITER ;
+
+
+--para probarlo es 
+SET @lista_correos = "";
+CALL construir_lista_correos(@lista_correos);
+SELECT @lista_correos;
