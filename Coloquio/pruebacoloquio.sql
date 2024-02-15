@@ -122,6 +122,8 @@ SELECT LastModifyUser FROM film
 WHERE title = 'cars 1'
 order by `LastModifyUser` desc;
 
+
+--CORRECCION DE JUANFRA, NO SE COMO LO HIZO pero bueno suerte!
 INSERT INTO film (title, description, language_id)
 values (
     'cars 1', 'CARS', 2
